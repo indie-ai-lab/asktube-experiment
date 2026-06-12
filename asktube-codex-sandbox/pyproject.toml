@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "asktube"
+version = "0.1.0"
+description = "Summarize YouTube transcripts as timestamped Markdown"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "anthropic>=0.40",
+  "openai>=1.50",
+  "youtube-transcript-api>=0.6.2",
+]
+
+[project.optional-dependencies]
+test = ["pytest>=8"]
+
+[project.scripts]
+asktube = "cli:main"
+
+[tool.setuptools]
+py-modules = ["cli", "formatter", "summarizer", "youtube"]
+package-dir = {"" = "src"}
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
