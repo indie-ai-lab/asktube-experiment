@@ -91,6 +91,26 @@ Published: <YYYY-MM-DD>
   no scraping
 - Keep total LOC under ~500 lines; this is a focused tool, not a framework
 
+### Build instructions (please follow)
+
+This spec is being given to **multiple AI tools at once** for a
+comparison experiment. To make the runs comparable, please:
+
+- **Ship a working result, don't ask clarifying questions.** If the
+  spec is ambiguous on a detail, pick a sensible default, leave a brief
+  `# NOTE:` comment explaining the choice, and keep building.
+- **Build at the repository root** (don't place files under any
+  subdirectory like `chatgpt-attempt/` or `codex-attempt/` — those are
+  archive folders the human will populate after).
+- **No extra API keys**. If a piece of metadata (video title, channel,
+  publish date) isn't reachable via `youtube-transcript-api` or a free
+  public endpoint, just emit `Unknown` for that field. Do not require
+  the user to set up a YouTube Data API key.
+- **Skip optional stretch goals** unless you have spare time after the
+  acceptance criteria pass. Stretch goals are for "if it's easy", not
+  for blocking the main deliverable.
+- One final commit/PR is preferred over many WIP commits.
+
 ### Stretch goals (optional)
 
 - Stream the LLM response (don't buffer entire summary)
