@@ -24,3 +24,11 @@ dist/
 # Test outputs that shouldn't be tracked
 output.md
 *.summary.md
+
+# Experiment raw artifacts (kept locally for reference, not in git)
+*.mov
+*.mp4
+*.zip
+
+# Codex sandbox dir is moved into codex-attempt/; the original is local only
+/asktube-codex-sandbox/
