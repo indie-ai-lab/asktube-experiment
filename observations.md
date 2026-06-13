@@ -8,11 +8,13 @@ both shipped a working result from a single prompt.
 
 | Axis | ChatGPT (GPT-5) | Codex (codex-1) |
 |---|---|---|
-| Total elapsed wall time | **4.7 min** | **8.0 min** |
-| Human active time | ~most of it (chat back-and-forth) | ~zero (handed off, watched) |
+| Recording duration | 4.7 min | 8.0 min |
+| **Estimated AI work time** (prompt → final artifact) | **~1.5 min** | **~7 min** |
+| Source for the estimate | file mtimes in zip (`18:12–18:13`) vs recording start `18:11:07` | git commit time `18:59:07` vs recording start `18:52:01` |
 | Human interventions | 0 | 0 |
 | Tests written | 16 | 14 |
 | Tests passing | 16 / 16 | 14 / 14 (Python 3.10+) |
+| Tests verified by the AI itself | No | Yes (Codex ran them green before handing over) |
 | LOC — total | 678 | 530 |
 | LOC — src/ only | 479 | 306 |
 | LOC — tests/ only | 199 | 224 |
@@ -48,17 +50,33 @@ The spec says "Python 3.10+", so Codex is technically more "correct"
 per the spec. ChatGPT is more conservative, presumably hedging against
 older runtimes. Two valid readings of "3.10+".
 
-### 3. Time spent vs time present
+### 3. Same "working code" — different verification level at hand-off
 
-The recordings differ by 3.3 min, but the *human* time is the opposite:
+Both ran 0-intervention once the spec was clear; the human walked away
+in both cases. So the popular "ChatGPT keeps you at the keyboard"
+framing doesn't hold for a well-specced task — neither does.
 
-- **ChatGPT (4.7 min, mostly active)**: chatting back-and-forth, copying
-  code into local files as it streams.
-- **Codex (8.0 min, mostly passive)**: one prompt in, then the agent
-  did the rest. Human watched the progress bar.
+The real difference is what each tool does *before* it hands the code
+back:
 
-If "time present at the keyboard" is what matters, Codex wins. If
-"time elapsed before I have something" is what matters, ChatGPT wins.
+- **ChatGPT** writes the code and the tests and hands them over.
+  It does not run the tests itself.
+- **Codex** writes the code and the tests, **runs the tests, fixes
+  failures, and hands over only after they go green**.
+
+Codex's extra ~5 minutes (~7 min total vs ~1.5 for ChatGPT) is spent
+inside the verify-and-iterate loop.
+
+The result:
+
+- **ChatGPT's code is "probably works"** — whoever receives it runs
+  pytest for the first time.
+- **Codex's code is "tests are green on my machine"** — already verified
+  by the AI before delivery.
+
+In our run, both happened to ship working code. But that's GPT-5 being
+good enough to land it without verification — not a guarantee. On edge-
+case-heavier real tasks, the verification gap shows up as actual bugs.
 
 ### 4. They picked the same architecture
 
@@ -112,9 +130,12 @@ you can spot which AI wrote which without reading the README.
 > **They're different in a way that changes what your day looks like,
 > not just what your screen looks like.**
 
-If your day is 1-hour bursts at the keyboard, ChatGPT keeps you in
-flow. If your day is "queue five things, walk away, come back to PRs",
-Codex is the loop.
+If you need a result *now* and you're comfortable trusting "probably
+works" code, ChatGPT delivers in ~1–2 minutes. If you'd rather come
+back to *verified* code and don't mind waiting ~7 minutes, Codex
+hands you a tested artifact.
 
-Neither one "won" AskTube. Both shipped. The choice is about your
-workflow shape, not their capability gap.
+Neither one "won" AskTube. Both shipped. The choice is about whether
+you value speed-to-first-draft or verification-before-hand-off — and
+how big the task is. Bigger tasks tilt the trade toward Codex; tiny
+quick-question-style tasks tilt back toward ChatGPT.
